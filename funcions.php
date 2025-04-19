@@ -2,23 +2,35 @@
 require_once 'config.php';
 
 /**
- * Regjistron një user të ri
+ * Regjistron një user të ri (si customer me role_id=2)
  */
-function registerUser($username, $email, $password) {
+function registerUser($email, $password) {
     global $pdo;
     $hash = password_hash($password, PASSWORD_DEFAULT);
-    $stmt = $pdo->prepare("INSERT INTO users (username,email,password) VALUES (?,?,?)");
-    return $stmt->execute([$username, $email, $hash]);
+    $stmt = $pdo->prepare("
+        INSERT INTO users (email, password, role_id)
+        VALUES (:email, :password, 2)
+    ");
+    return $stmt->execute([
+        ':email'    => $email,
+        ':password' => $hash,
+    ]);
 }
 
 /**
- * Bën login: kthen array(user) nëse suksesshëm, false në të kundërt
+ * Bën login: kthen array(user) përfshirë emrin e rolit, ose false
  */
-function loginUser($identifier, $password) {
+function loginUser($email, $password) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? OR username = ?");
-    $stmt->execute([$identifier, $identifier]);
+    $stmt = $pdo->prepare("
+        SELECT u.id, u.email, u.password, r.name AS role
+        FROM users u
+        JOIN roles r ON u.role_id = r.id
+        WHERE u.email = :email
+    ");
+    $stmt->execute([':email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
     if ($user && password_verify($password, $user['password'])) {
         return $user;
     }
@@ -30,49 +42,77 @@ function loginUser($identifier, $password) {
  */
 function sendPasswordReset($email) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    if (!$row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :email");
+    $stmt->execute([':email' => $email]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$row) {
         return false;
     }
-    $token = bin2hex(random_bytes(32));
-    $expires = date('Y-m-d H:i:s', time() + 3600); // skadon pas 1 ore
-    $upd = $pdo->prepare("UPDATE users SET reset_token = ?, reset_expires = ? WHERE id = ?");
-    $upd->execute([$token, $expires, $row['id']]);
 
-    $link = "http://tuadomen.com/reset-password.php?token=$token";
+    $token   = bin2hex(random_bytes(32));
+    $expires = date('Y-m-d H:i:s', time() + 3600);
+
+    $upd = $pdo->prepare("
+        UPDATE users
+        SET reset_token = :token, reset_expires = :expires
+        WHERE id = :id
+    ");
+    $upd->execute([
+        ':token'   => $token,
+        ':expires' => $expires,
+        ':id'      => $row['id'],
+    ]);
+
+    $link    = "http://tuadomen.com/reset-password.php?token=$token";
     $subject = "Rikuperim Fjalëkalimi";
-    $message = "Për të rikuperuar fjalëkalimin, klikoni: $link";
-    // siguroje që sende-mail funksionon, ose përdor PHPMailer
+    $message = "Kliko këtu për të rivendosur fjalëkalimin: $link";
     return mail($email, $subject, $message);
 }
 
 /**
- * Verifikon token-in dhe kthen ID-në e user-it, ose false
+ * Verifikon token-in dhe kthen ID-në e user-it
  */
 function verifyToken($token) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE reset_token = ? AND reset_expires > NOW()");
-    $stmt->execute([$token]);
+    $stmt = $pdo->prepare("
+        SELECT id FROM users
+        WHERE reset_token = :token
+          AND reset_expires > NOW()
+    ");
+    $stmt->execute([':token' => $token]);
     return $stmt->fetchColumn();
 }
 
 /**
- * Vendos fjalëkalim të ri
+ * Rivendos fjalëkalimin
  */
 function resetPassword($userId, $newPassword) {
     global $pdo;
     $hash = password_hash($newPassword, PASSWORD_DEFAULT);
-    $stmt = $pdo->prepare("UPDATE users SET password = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?");
-    return $stmt->execute([$hash, $userId]);
+    $stmt = $pdo->prepare("
+        UPDATE users
+        SET password      = :password,
+            reset_token   = NULL,
+            reset_expires = NULL
+        WHERE id = :id
+    ");
+    return $stmt->execute([
+        ':password' => $hash,
+        ':id'       => $userId,
+    ]);
 }
 
 /**
- * Nxjerr të dhënat e user-it sipas ID
+ * Kthen të dhënat e user-it (përfshirë role)
  */
 function getUserById($id) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT id,username,email,role FROM users WHERE id = ?");
-    $stmt->execute([$id]);
+    $stmt = $pdo->prepare("
+        SELECT u.id, u.email, r.name AS role
+        FROM users u
+        JOIN roles r ON u.role_id = r.id
+        WHERE u.id = :id
+    ");
+    $stmt->execute([':id' => $id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
