@@ -1,15 +1,22 @@
 <?php
 require 'functions.php';
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id = trim($_POST['identifier']);
-    $pw = $_POST['password'];
+    $email    = trim($_POST['identifier']);
+    $password = $_POST['password'];
 
-    if ($user = loginUser($id, $pw)) {
+    if ($user = loginUser($email, $password)) {
         $_SESSION['user_id'] = $user['id'];
-        header('Location: profile.php');
+        $_SESSION['role']    = $user['role'];
+
+        if ($user['role'] === 'admin') {
+            header('Location: admin.php');
+        } else {
+            header('Location: customer.php');
+        }
         exit;
     } else {
-        die("Kredencialet janë të pasakta.");
+        echo "Kredencialet janë të pasakta. <a href='login.html'>Provo përsëri</a>.";
     }
 }
