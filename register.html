@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <title>Regjistrimi</title>
+  <!-- Hook për CSS -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- Hook për JavaScript -->
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="container" id="register-container">
+    <h1 class="page-title">Regjistrohu</h1>
+    <form id="register-form" class="form" method="POST" action="register.php">
+      <div class="form-group">
+        <label for="username">Emër Përdoruesi:</label>
+        <input type="text" id="username" name="username" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Fjalëkalim:</label>
+        <input type="password" id="password" name="password" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm_password">Konfirmo Fjalëkalimin:</label>
+        <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Regjistrohu</button>
+    </form>
+
+    <p class="helper-text">Ke llogari? <a href="login.html">Hyr këtu</a></p>
+  </div>
+</body>
+</html>

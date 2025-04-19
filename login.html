@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <title>Hyr në sistem</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="container" id="login-container">
+    <h1 class="page-title">Hyr në sistem</h1>
+    <form id="login-form" class="form" method="POST" action="login.php">
+      <div class="form-group">
+        <label for="identifier">Email ose Emër Përdoruesi:</label>
+        <input type="text" id="identifier" name="identifier" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Fjalëkalim:</label>
+        <input type="password" id="password" name="password" class="form-control" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Hyr</button>
+    </form>
+
+    <div class="links">
+      <a href="forgot-password.html" class="link">Harruat fjalëkalimin?</a><br>
+      <span>Ende nuk jeni regjistruar? <a href="register.html">Regjistrohu këtu</a></span>
+    </div>
+  </div>
+</body>
+</html>
