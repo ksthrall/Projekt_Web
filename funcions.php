@@ -129,7 +129,7 @@ function resetPassword($userId, $newPassword) {
      global $pdo;
      $hash = password_hash($password, PASSWORD_DEFAULT);
      $stmt = $pdo->prepare("
-         INSERT INTO users (email, password, role_id)
+         INSERT INTO perdorues (email, password, role_id)
          VALUES (:email, :password, 1)
      ");
      return $stmt->execute([
