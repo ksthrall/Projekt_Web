@@ -122,6 +122,21 @@ function resetPassword($userId, $newPassword) {
 }
 
 
+ /**
+  * Regjistron nje Admin (role_id = 1)
+  */
+ function registerAdmin($email, $password) {
+     global $pdo;
+     $hash = password_hash($password, PASSWORD_DEFAULT);
+     $stmt = $pdo->prepare("
+         INSERT INTO users (email, password, role_id)
+         VALUES (:email, :password, 1)
+     ");
+     return $stmt->execute([
+         ':email'    => $email,
+         ':password' => $hash,
+     ]);
+ }
 /**
  * Kthen të dhenat e user
  */
