@@ -1,6 +1,5 @@
 <?php
 require 'functions.php';
-session_start();
 
 // Siguro që eshte i loguar
 if (empty($_SESSION['user_id'])) {
