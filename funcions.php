@@ -2,10 +2,22 @@
 require_once 'config.php';
 date_default_timezone_set('Europe/Tirane');
 /**
+ * Funksion per te kontrolluar numrin e karaktereve dhe a permban numra fjalekalimi
+ */
+function isPasswordValid($password) {
+    return strlen($password) >= 8 && preg_match('/\d/', $password);
+}
+
+/**
  * Regjistron nje user të ri (si customer me role_id=2)
  */
 function registerUser($email, $password) {
     global $pdo;
+
+    if (!isPasswordValid($password)) {
+        return false; 
+    }
+
     $hash = password_hash($password, PASSWORD_DEFAULT);
     $stmt = $pdo->prepare("
         INSERT INTO perdorues (email, password, role_id)
@@ -16,21 +28,8 @@ function registerUser($email, $password) {
         ':password' => $hash,
     ]);
 }
-/**
- * Regjistron nje Admin (role_id = 1)
- */
-function registerAdmin($email, $password) {
-    global $pdo;
-    $hash = password_hash($password, PASSWORD_DEFAULT);
-    $stmt = $pdo->prepare("
-        INSERT INTO users (email, password, role_id)
-        VALUES (:email, :password, 1)
-    ");
-    return $stmt->execute([
-        ':email'    => $email,
-        ':password' => $hash,
-    ]);
-}
+
+
 
 /**
  * Ben login: kthen array(user) perfshire emrin e rolit, ose false
@@ -103,6 +102,11 @@ function verifyToken($token) {
  */
 function resetPassword($userId, $newPassword) {
     global $pdo;
+
+    if (!isPasswordValid($newPassword)) {
+        return false;
+    }
+
     $hash = password_hash($newPassword, PASSWORD_DEFAULT);
     $stmt = $pdo->prepare("
         UPDATE perdorues
@@ -116,6 +120,7 @@ function resetPassword($userId, $newPassword) {
         ':id'       => $userId,
     ]);
 }
+
 
 /**
  * Kthen të dhenat e user
