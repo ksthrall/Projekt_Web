@@ -1,10 +1,14 @@
 <?php
 require 'functions.php';
-session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['identifier']);
     $password = $_POST['password'];
+
+    if (!isPasswordValid($password)) {
+        echo "Fjalëkalimi duhet të ketë të paktën 8 karaktere dhe një numër. <a href='login.html'>Provo përsëri</a>.";
+        exit;
+    }
 
     if ($user = loginUser($email, $password)) {
         $_SESSION['user_id'] = $user['id'];
