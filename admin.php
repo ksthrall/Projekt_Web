@@ -1,7 +1,7 @@
 <?php
 require 'functions.php';
 
-// Siguro qe eshtë i loguar + eshtë admin
+// Siguro që përdoruesi është i kyçur dhe ka rol admin
 if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header('Location: login.html');
     exit;
@@ -26,6 +26,13 @@ $user = getUserById($_SESSION['user_id']);
       <li>Shiko statistikat</li>
       <li>Parametra sistemi</li>
     </ul>
+
+    <!-- Butoni për shtimin e admin-eve të tjere -->
+    <form method="GET" action="register-admin.html" class="form" style="margin-bottom: 1em;">
+      <button type="submit" class="btn btn-primary">Shto admin të tjerë</button>
+    </form>
+
+    <!-- Butoni i daljes nga sistemi -->
     <form id="logout-form" method="POST" action="logout.php">
       <button type="submit" class="btn btn-secondary">Dil</button>
     </form>
