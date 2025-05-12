@@ -19,7 +19,7 @@ $user = getUserById($_SESSION['user_id']);
 <head>
   <meta charset="UTF-8">
   <title>Customer Dashboard</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="frontend.css">
   <script src="app.js" defer></script>
 </head>
 <body>
