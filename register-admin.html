@@ -2,15 +2,14 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>Regjistrimi</title>
   <link rel="stylesheet" href="frontend.css">
+  <title>Regjistrim Admini</title>
   <script src="app.js" defer></script>
 </head>
 <body>
-  <div class="container" id="register-container">
-    <h1 class="page-title">Regjistrohu</h1>
-    <form id="register-form" class="form" method="POST" action="register.php">
-
+  <div class="container" id="register-admin-container">
+    <h1 class="page-title">Shto Administrator të Ri</h1>
+    <form id="register-admin-form" class="form" method="POST" action="register-admin.php">
       <div class="form-group">
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" class="form-control" required>
@@ -26,10 +25,13 @@
         <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
       </div>
 
-      <button type="submit" class="btn btn-primary">Regjistrohu</button>
+      <!-- Role_id=1 per admin -->
+      <input type="hidden" name="role_id" value="1">
+
+      <button type="submit" class="btn btn-primary">Shto Admin</button>
     </form>
 
-    <p class="helper-text">Ke llogari? <a href="login.html">Hyr këtu</a></p>
+    <p class="helper-text"><a href="admin.php">Kthehu te Dashboard</a></p>
   </div>
 </body>
 </html>
