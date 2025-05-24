@@ -1,6 +1,7 @@
 <?php
 require 'functions.php';
 
+
 $categories = getCategories();
 $parfumes = getParfumes();
 $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
@@ -18,6 +19,8 @@ function deletePerfume($id) {
     $stmt->bindParam(':id_produkti', $id, PDO::PARAM_INT);
     $stmt->execute();
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -53,6 +56,8 @@ function deletePerfume($id) {
   </script>
 </head>
 <body>
+<?php include 'header.php'; ?>
+
   <div class="container">
     <header class="header">
       <div class="logo">Jeremy Fragrance</div>

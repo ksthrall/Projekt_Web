@@ -10,7 +10,6 @@ if (isset($_GET['id'])) {
 
     $perfume = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Check if perfume exists
     if ($perfume) {
         echo json_encode($perfume); 
     } else {

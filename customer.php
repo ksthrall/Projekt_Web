@@ -1,7 +1,7 @@
 <?php
 require 'functions.php';
 
-// Siguro që eshte i loguar
+// Siguro qe eshte i loguar
 if (empty($_SESSION['user_id'])) {
     header('Location: login.html');
     exit;
